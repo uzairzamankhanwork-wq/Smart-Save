@@ -1,0 +1,53 @@
+{
+    // Run these from VS Code: Terminal → Run Task…
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "SmartSave: first-time setup",
+            "type": "shell",
+            "command": "composer setup",
+            "problemMatcher": []
+        },
+        {
+            "label": "SmartSave: create first admin",
+            "type": "shell",
+            "command": "php artisan smartsave:create-admin",
+            "problemMatcher": []
+        },
+        {
+            "label": "SmartSave: run (this PC only)",
+            "type": "shell",
+            "command": "php artisan serve",
+            "isBackground": true,
+            "problemMatcher": [],
+            "group": { "kind": "build", "isDefault": true }
+        },
+        {
+            "label": "SmartSave: run (phones on same Wi-Fi)",
+            "type": "shell",
+            "command": "php artisan serve --host=0.0.0.0 --port=8000",
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "SmartSave: watch CSS/JS while editing",
+            "type": "shell",
+            "command": "npm run dev",
+            "isBackground": true,
+            "problemMatcher": []
+        },
+        {
+            "label": "SmartSave: run tests",
+            "type": "shell",
+            "command": "php artisan test",
+            "problemMatcher": [],
+            "group": { "kind": "test", "isDefault": true }
+        },
+        {
+            "label": "SmartSave: load demo data",
+            "type": "shell",
+            "command": "php artisan db:seed --class=DemoSeeder",
+            "problemMatcher": []
+        }
+    ]
+}

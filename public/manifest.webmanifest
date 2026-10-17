@@ -1,0 +1,23 @@
+{
+    "id": "/",
+    "name": "SmartSave",
+    "short_name": "SmartSave",
+    "description": "Private savings and goal tracker",
+    "start_url": "/dashboard?source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#f8fafc",
+    "theme_color": "#059669",
+    "categories": ["finance", "productivity"],
+    "icons": [
+        { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    ],
+    "shortcuts": [
+        { "name": "Add savings", "url": "/transactions/create?type=deposit", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Record expense", "url": "/expenses/create", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] },
+        { "name": "Goals", "url": "/goals", "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }] }
+    ]
+}

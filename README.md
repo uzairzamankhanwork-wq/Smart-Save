@@ -169,6 +169,18 @@ php artisan config:cache && php artisan route:cache && php artisan view:cache
 - Create the first admin with `smartsave:create-admin`, then add the cron entry above.
 - Run `composer audit` and `npm audit` before each deployment.
 
+## 8a. Render free demo
+
+The repository includes a `Dockerfile` and `render.yaml` for a one-click Render Blueprint deployment:
+
+1. In Render, create a **Blueprint** from this GitHub repository and deploy `render.yaml`. Set the requested bootstrap admin name, email, and a unique demo-only password in Render's environment settings.
+2. Wait for the first deployment to finish. The container runs the migrations, creates the first administrator from those secrets, and uses Render's assigned HTTPS hostname. Sign in with that account.
+3. Create any other accounts from **Admin › Users**.
+
+This Blueprint deliberately uses SQLite and Render's free web-service plan for a low-cost demo. **Do not use it for real financial data:** free web services sleep when idle, and their filesystem is ephemeral. The SQLite database and accounts can be reset when the service restarts, spins down, or is redeployed; the bootstrap admin is recreated from the Render environment secrets. Scheduled reminders aren't run by this Blueprint, and the default mailer only logs messages. Free instances also aren't intended for production. Use a unique demo-only password and keep the bootstrap credentials in Render's secret environment settings, never in source control.
+
+For real use, switch to a paid service and a persistent managed database with backups. The Docker image includes PostgreSQL and MySQL PDO drivers; set `DB_CONNECTION` and the corresponding database environment variables, then verify migrations and backups before entering real data. Keep `APP_KEY` stable when upgrading or recreating the service.
+
 ## 9. Backup & restore
 
 Everything lives in the database (no uploaded files). **Also back up `.env` separately and securely:**

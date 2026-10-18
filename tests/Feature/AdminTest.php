@@ -59,4 +59,29 @@ class AdminTest extends TestCase
         $this->artisan('smartsave:create-admin', ['--name' => 'Other', '--email' => 'other@test.test'])->assertFailed();
         $this->assertSame(1, User::count());
     }
+
+    public function test_bootstrap_admin_command_uses_secret_environment_password_and_is_idempotent(): void
+    {
+        putenv('SMARTSAVE_BOOTSTRAP_ADMIN_PASSWORD=OwnerPass123');
+
+        try {
+            $this->artisan('smartsave:create-admin', [
+                '--bootstrap' => true,
+                '--name' => 'Owner',
+                '--email' => 'owner@test.test',
+            ])->assertSuccessful();
+
+            $this->assertTrue(User::where('email', 'owner@test.test')->first()->isAdmin());
+
+            $this->artisan('smartsave:create-admin', [
+                '--bootstrap' => true,
+                '--name' => 'Owner',
+                '--email' => 'owner@test.test',
+            ])->assertSuccessful();
+
+            $this->assertSame(1, User::count());
+        } finally {
+            putenv('SMARTSAVE_BOOTSTRAP_ADMIN_PASSWORD');
+        }
+    }
 }

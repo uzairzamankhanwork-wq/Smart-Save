@@ -14,13 +14,17 @@ use Illuminate\Validation\Rules\Password;
  */
 class CreateAdmin extends Command
 {
-    protected $signature = 'smartsave:create-admin {--name=} {--email=}';
+    protected $signature = 'smartsave:create-admin {--name=} {--email=} {--bootstrap : Use Render bootstrap credentials and skip if an admin already exists}';
 
     protected $description = 'Create the first SmartSave administrator (only works while no admin exists)';
 
     public function handle(): int
     {
         if (User::where('role', User::ROLE_ADMIN)->exists()) {
+            if ($this->option('bootstrap')) {
+                return self::SUCCESS;
+            }
+
             $this->error('An administrator already exists. Manage accounts from the Admin › Users page.');
 
             return self::FAILURE;
@@ -31,10 +35,23 @@ class CreateAdmin extends Command
             return self::FAILURE;
         }
 
-        $name = $this->option('name') ?: $this->ask('Name');
-        $email = $this->option('email') ?: $this->ask('Email');
-        $password = $this->secret('Password (min 10 chars, upper+lower case and a number)');
-        $confirm = $this->secret('Confirm password');
+        if ($this->option('bootstrap')) {
+            $name = $this->option('name') ?: '';
+            $email = $this->option('email') ?: '';
+            $password = getenv('SMARTSAVE_BOOTSTRAP_ADMIN_PASSWORD') ?: '';
+            $confirm = $password;
+
+            if ($password === '') {
+                $this->error('SMARTSAVE_BOOTSTRAP_ADMIN_PASSWORD must be set when using --bootstrap.');
+
+                return self::FAILURE;
+            }
+        } else {
+            $name = $this->option('name') ?: $this->ask('Name');
+            $email = $this->option('email') ?: $this->ask('Email');
+            $password = $this->secret('Password (min 10 chars, upper+lower case and a number)');
+            $confirm = $this->secret('Confirm password');
+        }
 
         $validator = Validator::make(
             ['name' => $name, 'email' => $email, 'password' => $password, 'password_confirmation' => $confirm],
